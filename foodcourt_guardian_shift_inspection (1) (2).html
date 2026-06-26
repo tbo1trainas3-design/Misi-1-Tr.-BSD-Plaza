@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foodcourt Guardian: Shift Inspection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-color: #f4f4f0;
+            --main-yellow: #FFD500;
+            --main-blue: #00E5FF;
+            --main-pink: #FF007F;
+            --main-green: #00FF66;
+            --main-red: #FF3333;
+            --border-color: #111111;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#d1d1d1 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--border-color);
+            overflow-x: hidden;
+        }
+
+        /* Neo-Brutalist Box Styles */
+        .brutal-box {
+            background-color: white;
+            border: 3px solid var(--border-color);
+            box-shadow: 6px 6px 0px var(--border-color);
+            border-radius: 12px;
+        }
+
+        .brutal-btn {
+            border: 3px solid var(--border-color);
+            box-shadow: 4px 4px 0px var(--border-color);
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.1s ease;
+            cursor: pointer;
+        }
+
+        .brutal-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px var(--border-color);
+        }
+
+        .brutal-input {
+            border: 3px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 600;
+            outline: none;
+            width: 100%;
+        }
+
+        .brutal-input:focus {
+            background-color: #f0f8ff;
+            box-shadow: 4px 4px 0px var(--border-color);
+        }
+
+        /* Hide sections by default */
+        .screen {
+            display: none;
+            min-height: 100vh;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .screen.active {
+            display: flex;
+        }
+
+        .progress-bar-container {
+            border: 3px solid var(--border-color);
+            border-radius: 100px;
+            overflow: hidden;
+            background: white;
+            height: 24px;
+            width: 100%;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--main-blue);
+            width: 0%;
+            border-right: 3px solid var(--border-color);
+            transition: width 0.3s ease;
+        }
+
+        .badge {
+            background-color: var(--main-yellow);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 3px 3px 0px var(--border-color);
+        }
+
+        /* Animation */
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <main id="app" class="max-w-md mx-auto w-full relative">
+        
+        <!-- Screen 1: Gateway & Input -->
+        <section id="screen-gateway" class="screen active">
+            <div class="brutal-box p-6 w-full text-center bg-white relative">
+                <div class="absolute -top-6 -left-4 bg-[var(--main-yellow)] text-xs font-bold px-3 py-1 border-2 border-black rounded-full shadow-[2px_2px_0px_black] transform -rotate-6">
+                    NEW!
+                </div>
+                <h1 class="text-3xl font-bold mb-2 uppercase leading-tight">Foodcourt <br><span class="text-[var(--main-pink)]">Guardian</span></h1>
+                <p class="text-sm font-semibold mb-6 bg-[var(--main-blue)] inline-block px-3 py-1 border-2 border-black rounded shadow-[2px_2px_0px_black]">Shift Inspection</p>
+                
+                <p class="text-sm mb-6 font-semibold text-gray-700">
+                    "Kualitas pelayanan berawal dari kedisiplinan. Apakah timmu sudah siap tampil prima hari ini?"
+                </p>
+
+                <div class="text-left space-y-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-bold mb-1">NAMA LENGKAP</label>
+                        <input type="text" id="input-name" class="brutal-input text-sm" placeholder="Hanya huruf..." oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')" autocomplete="off">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1">NIK</label>
+                        <input type="text" id="input-nik" class="brutal-input text-sm" placeholder="Hanya angka..." oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="16" autocomplete="off">
+                    </div>
+                </div>
+
+                <button onclick="startGame()" class="brutal-btn bg-[var(--main-green)] w-full py-3 text-lg">
+                    MULAI MISI
+                </button>
+            </div>
+            <p class="text-xs font-bold mt-8 text-center bg-white px-4 py-2 border-2 border-black rounded shadow-[2px_2px_0px_black]">
+                Education & Training Dept. © 2026
+            </p>
+        </section>
+
+        <!-- Screen 2: Mission Briefing -->
+        <section id="screen-briefing" class="screen">
+            <div class="brutal-box p-6 w-full bg-[#f8f8f8]">
+                <h2 class="text-2xl font-bold mb-4 uppercase text-center border-b-4 border-black pb-2">Mission Briefing</h2>
+                
+                <div class="text-sm font-semibold space-y-3 mb-6">
+                    <p>Pagi yang sibuk di Foodcourt BSD Plaza. Briefing pagi baru saja selesai.</p>
+                    <p>Sebagai <span class="bg-[var(--main-yellow)] px-1 border border-black">Senior Crew</span>, tugas terakhirmu sebelum buka adalah memastikan seluruh rekan krumu memiliki penampilan yang merepresentasikan kualitas pelayanan prima perusahaan!</p>
+                    
+                    <div class="bg-[var(--main-pink)] text-white p-3 border-2 border-black rounded mt-4">
+                        <h3 class="font-bold underline mb-1">PERATURAN:</h3>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li>Analisa deskripsi penampilan kru.</li>
+                            <li>Pilih <b>IZINKAN KERJA</b> jika semua sesuai SOP.</li>
+                            <li>Pilih <b>TOLAK/REVISI</b> jika ada pelanggaran SOP sekecil apapun.</li>
+                            <li>Capai skor 100% untuk lulus!</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <button onclick="startInspection()" class="brutal-btn bg-[var(--main-blue)] w-full py-3">
+                    SAYA SIAP INSPEKSI!
+                </button>
+            </div>
+        </section>
+
+        <!-- Screen 3: Core Game / Inspection -->
+        <section id="screen-game" class="screen justify-start pt-6">
+            <!-- Header: Progress & Audio -->
+            <div class="w-full flex justify-between items-center mb-4 gap-2">
+                <div class="flex-1">
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span>PROGRESS</span>
+                        <span id="progress-text">0%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                </div>
+                <button onclick="toggleAudio()" id="btn-audio" class="brutal-btn bg-white w-10 h-10 flex items-center justify-center text-xl">
+                    🔊
+                </button>
+            </div>
+
+            <div class="w-full flex justify-between items-center mb-4">
+                <div class="font-bold bg-white px-3 py-1 border-2 border-black rounded shadow-[2px_2px_0px_black] text-sm">
+                    Kru: <span id="kru-counter">1/7</span>
+                </div>
+                <div class="font-bold bg-[var(--main-yellow)] px-3 py-1 border-2 border-black rounded shadow-[2px_2px_0px_black] text-sm">
+                    Skor: <span id="score-text">0</span>
+                </div>
+            </div>
+
+            <!-- Crew Card -->
+            <div class="brutal-box w-full bg-white flex flex-col mb-6 relative overflow-hidden">
+                <div class="bg-[var(--border-color)] text-white font-bold p-2 text-center uppercase tracking-widest">
+                    Profil Inspeksi
+                </div>
+                <div class="p-6 text-center flex-1 flex flex-col justify-center items-center">
+                    <div id="crew-avatar" class="text-6xl mb-4">🧑</div>
+                    <h3 id="crew-name" class="font-bold text-xl mb-3 uppercase">Kru A</h3>
+                    <p id="crew-desc" class="font-semibold text-gray-700 bg-gray-100 p-4 border-2 border-black rounded shadow-[2px_2px_0px_black] w-full text-sm leading-relaxed text-left">
+                        Memakai seragam lengkap.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="w-full grid grid-cols-2 gap-4">
+                <button onclick="checkAnswer('izinkan')" class="brutal-btn bg-[var(--main-green)] py-4 text-sm flex flex-col items-center justify-center gap-1">
+                    <span class="text-xl">✅</span>
+                    IZINKAN KERJA
+                </button>
+                <button onclick="checkAnswer('tolak')" class="brutal-btn bg-[var(--main-red)] text-white py-4 text-sm flex flex-col items-center justify-center gap-1">
+                    <span class="text-xl">⛔</span>
+                    TOLAK / REVISI
+                </button>
+            </div>
+        </section>
+
+        <!-- Modal Feedback (Overlay) -->
+        <div id="modal-feedback" class="fixed inset-0 bg-black/60 z-50 hidden flex-col justify-center items-center p-4">
+            <div class="brutal-box p-6 max-w-sm w-full text-center bg-white animate-pop">
+                <h2 id="feedback-title" class="text-3xl font-bold uppercase mb-2">BENAR!</h2>
+                <div id="feedback-icon" class="text-5xl mb-4">🎉</div>
+                <p id="feedback-msg" class="font-semibold text-sm mb-6 p-3 border-2 border-black rounded bg-gray-100 text-left">
+                    Penjelasan di sini.
+                </p>
+                <button onclick="nextQuestion()" class="brutal-btn bg-[var(--main-yellow)] w-full py-3">
+                    LANJUTKAN
+                </button>
+            </div>
+        </div>
+
+        <!-- Screen 4: Result/Debrief -->
+        <section id="screen-result" class="screen">
+            <div class="brutal-box p-6 w-full text-center bg-white relative">
+                <div class="absolute -top-8 left-1/2 transform -translate-x-1/2">
+                    <div id="result-badge" class="badge">🏆</div>
+                </div>
+                
+                <h2 class="text-2xl font-bold mt-8 mb-2 uppercase border-b-4 border-black pb-2">Laporan Inspeksi</h2>
+                
+                <div class="my-4 bg-gray-100 p-3 border-2 border-black rounded shadow-[2px_2px_0px_black] text-left">
+                    <p class="font-bold text-sm">Nama: <span id="res-name" class="font-normal">John Doe</span></p>
+                    <p class="font-bold text-sm">NIK: <span id="res-nik" class="font-normal">123</span></p>
+                </div>
+
+                <div class="text-5xl font-bold mb-2" id="res-score-percent">100%</div>
+                <p class="font-bold mb-4 text-sm" id="res-status-msg">LULUS / TIDAK LULUS</p>
+                
+                <div id="res-reinforcement" class="text-sm font-semibold mb-6 p-4 border-2 border-black rounded bg-[var(--main-blue)]">
+                    Feedback positif disini.
+                </div>
+
+                <button onclick="location.reload()" class="brutal-btn bg-[var(--main-green)] w-full py-3">
+                    SELESAI / MAIN LAGI
+                </button>
+            </div>
+             <p class="text-xs font-bold mt-8 text-center bg-white px-4 py-2 border-2 border-black rounded shadow-[2px_2px_0px_black]">
+                Education & Training Dept. © 2026
+            </p>
+        </section>
+
+    </main>
+
+    <script>
+        // --- DATA & STATE ---
+        const questions = [
+            {
+                kru: "Kru A (Kru Foodcourt Pria)",
+                avatar: "🧑",
+                desc: "Rambut tersisir rapi, kemeja dimasukkan dengan benar, memakai sepatu hitam polos, menggunakan jam tangan standar, dan memiliki wangi parfum yang ringan dan segar.",
+                correctAction: "izinkan",
+                feedbackCorrect: "Tepat! Penampilan Kru A sudah sepenuhnya sesuai dengan SOP perusahaan. Siap melayani pelanggan!",
+                feedbackWrong: "Kurang Tepat. Kru A sudah memenuhi semua kriteria SOP (rapi, sepatu hitam, parfum ringan, baju dimasukkan)."
+            },
+            {
+                kru: "Kru B (Wanita)",
+                avatar: "👩‍🍳",
+                desc: "Rambut diikat rapi, riasan wajah natural, kuku dipotong pendek, namun terlihat menggunakan cat kuku berwarna merah terang. Seragam bersih dan rapi.",
+                correctAction: "tolak",
+                feedbackCorrect: "Tepat! Kru yang bertugas di lapangan dilarang menggunakan cat kuku berwarna, meskipun kuku sudah pendek, demi standar kebersihan (Hygiene).",
+                feedbackWrong: "Salah! Kru wanita dilarang menggunakan cat kuku merah atau berwarna terang, harus dihapus sebelum masuk service area."
+            },
+            {
+                kru: "Kru C (Pria)",
+                avatar: "👱‍♂️",
+                desc: "Potongan rambut pendek dan rapi, namun rambut dicat dengan warna pirang terang. Seragam rapi terlipat, sepatu hitam bersih.",
+                correctAction: "tolak",
+                feedbackCorrect: "Tepat! Warna rambut kru harus natural (hitam/coklat gelap). Warna pirang terang menyalahi standar grooming profesional kita.",
+                feedbackWrong: "Salah! Walaupun rapi, rambut berwarna pirang terang melanggar aturan grooming. Warna rambut harus natural."
+            },
+            {
+                kru: "Kru D (Wanita)",
+                avatar: "🧕",
+                desc: "Menggunakan hijab hitam polos yang dimasukkan rapi ke dalam kerah seragam. Seragam bersih, tidak menggunakan perhiasan mencolok, dan memakai sepatu pantofel hitam.",
+                correctAction: "izinkan",
+                feedbackCorrect: "Tepat! Penggunaan hijab berwarna netral (hitam) dan dimasukkan ke dalam kerah sudah sesuai standar keselamatan dan kerapian.",
+                feedbackWrong: "Kurang Tepat. Penampilan Kru D sudah sempurna. Hijab hitam yang dimasukkan ke kerah sangat sesuai SOP."
+            },
+            {
+                kru: "Kru E (Pria)",
+                avatar: "🧔‍♂️",
+                desc: "Rambut sedikit gondrong di bagian belakang, terlihat ada kumis tipis dan jenggot yang belum dicukur. Seragam sedikit kusut dan dikeluarkan.",
+                correctAction: "tolak",
+                feedbackCorrect: "Tepat sekali! Terdapat banyak pelanggaran: rambut menyentuh kerah, belum cukur kumis/jenggot, dan baju dikeluarkan. Wajib revisi total!",
+                feedbackWrong: "Salah besar! Kru ini melanggar banyak SOP kebersihan: harus cukur rapi, rambut pendek, dan baju wajib dimasukkan."
+            },
+            {
+                kru: "Kru F (Wanita)",
+                avatar: "👩‍🦰",
+                desc: "Rambut sebahu dibiarkan terurai tanpa diikat, poni panjang menutupi sebagian mata. Seragam rapi, riasan tipis, sepatu sesuai.",
+                correctAction: "tolak",
+                feedbackCorrect: "Tepat! Rambut sebahu wajib diikat/dijepit dengan hairnet, dan poni tidak boleh menutupi mata karena mengganggu pandangan dan kebersihan.",
+                feedbackWrong: "Salah! Rambut yang terurai dan poni menutupi mata sangat berbahaya saat melayani dan melanggar standar hygiene (bisa rontok ke makanan)."
+            },
+            {
+                kru: "Kru G (Pria)",
+                avatar: "👦",
+                desc: "Rambut dipangkas rapi, kuku tangan bersih dan dipotong pendek. Name tag terpasang lurus di dada kiri, dan memakai sepatu kerja hitam yang bersih.",
+                correctAction: "izinkan",
+                feedbackCorrect: "Tepat! Penampilan teladan. Name tag di dada kiri, kuku bersih, rambut rapi. Langsung izinkan masuk service area!",
+                feedbackWrong: "Kurang Tepat. Kru G adalah contoh penampilan yang sempurna sesuai SOP (Name tag benar, kuku bersih, rapi)."
+            }
+        ];
+
+        let state = {
+            name: "",
+            nik: "",
+            currentQ: 0,
+            score: 0,
+            isMuted: false,
+            audioCtx: null,
+            bgmOscillator: null,
+            bgmInterval: null
+        };
+
+        // --- WEB AUDIO API (SYNTH) ---
+        function initAudio() {
+            if (!state.audioCtx) {
+                state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if(state.audioCtx.state === 'suspended') {
+                state.audioCtx.resume();
+            }
+        }
+
+        function playBGM() {
+            if (state.isMuted) return;
+            stopBGM();
+            
+            // Create a simple rhythmic Gen-Z type tech/industrial beat (synth pulse)
+            let noteIndex = 0;
+            const notes = [200, 200, 300, 200, 400, 200, 150, 200]; // frequencies
+            
+            state.bgmInterval = setInterval(() => {
+                if(state.isMuted) return;
+                const osc = state.audioCtx.createOscillator();
+                const gain = state.audioCtx.createGain();
+                
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(notes[noteIndex], state.audioCtx.currentTime);
+                
+                gain.gain.setValueAtTime(0.02, state.audioCtx.currentTime); // Low volume
+                gain.gain.exponentialRampToValueAtTime(0.001, state.audioCtx.currentTime + 0.1);
+                
+                osc.connect(gain);
+                gain.connect(state.audioCtx.destination);
+                
+                osc.start();
+                osc.stop(state.audioCtx.currentTime + 0.1);
+                
+                noteIndex = (noteIndex + 1) % notes.length;
+            }, 250); // 16th notes at 120bpm approx
+        }
+
+        function stopBGM() {
+            if (state.bgmInterval) {
+                clearInterval(state.bgmInterval);
+                state.bgmInterval = null;
+            }
+        }
+
+        function playSFX(type) {
+            if (state.isMuted || !state.audioCtx) return;
+            const osc = state.audioCtx.createOscillator();
+            const gain = state.audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(state.audioCtx.destination);
+
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, state.audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, state.audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, state.audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, state.audioCtx.currentTime + 0.3);
+                osc.start();
+                osc.stop(state.audioCtx.currentTime + 0.3);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, state.audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(80, state.audioCtx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.1, state.audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, state.audioCtx.currentTime + 0.3);
+                osc.start();
+                osc.stop(state.audioCtx.currentTime + 0.3);
+            }
+        }
+
+        function toggleAudio() {
+            state.isMuted = !state.isMuted;
+            const btn = document.getElementById('btn-audio');
+            if (state.isMuted) {
+                btn.innerText = '🔇';
+                stopBGM();
+            } else {
+                btn.innerText = '🔊';
+                initAudio();
+                playBGM();
+            }
+        }
+
+        // --- GAME LOGIC ---
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function startGame() {
+            const nameInput = document.getElementById('input-name').value.trim();
+            const nikInput = document.getElementById('input-nik').value.trim();
+
+            if (!nameInput || !nikInput) {
+                alert("Harap isi Nama dan NIK dengan benar!"); // Fallback if modal not ready, but we should use UI
+                // Quick custom alert replacing browser alert
+                const btn = document.querySelector('#screen-gateway button');
+                const oldText = btn.innerText;
+                btn.innerText = "ISI DATA DULU!";
+                btn.classList.add('bg-[var(--main-red)]', 'text-white');
+                setTimeout(() => {
+                    btn.innerText = oldText;
+                    btn.classList.remove('bg-[var(--main-red)]', 'text-white');
+                }, 1500);
+                return;
+            }
+
+            state.name = nameInput;
+            state.nik = nikInput;
+            initAudio(); // User interaction enables audio
+            showScreen('screen-briefing');
+        }
+
+        function startInspection() {
+            initAudio();
+            playBGM();
+            showScreen('screen-game');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = questions[state.currentQ];
+            document.getElementById('kru-counter').innerText = `${state.currentQ + 1}/${questions.length}`;
+            document.getElementById('crew-avatar').innerText = q.avatar;
+            document.getElementById('crew-name').innerText = q.kru;
+            document.getElementById('crew-desc').innerText = q.desc;
+            
+            // Update Progress
+            const progressPercent = (state.currentQ / questions.length) * 100;
+            document.getElementById('progress-text').innerText = `${Math.round(progressPercent)}%`;
+            document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+            document.getElementById('score-text').innerText = state.score;
+        }
+
+        function checkAnswer(action) {
+            const q = questions[state.currentQ];
+            const isCorrect = (action === q.correctAction);
+            
+            const modal = document.getElementById('modal-feedback');
+            const title = document.getElementById('feedback-title');
+            const icon = document.getElementById('feedback-icon');
+            const msg = document.getElementById('feedback-msg');
+            const box = modal.querySelector('.brutal-box');
+
+            if (isCorrect) {
+                state.score++;
+                playSFX('correct');
+                title.innerText = "TEPAT SEKALI!";
+                title.className = "text-3xl font-bold uppercase mb-2 text-[var(--main-green)]";
+                icon.innerText = "🎯";
+                msg.innerText = q.feedbackCorrect;
+                box.style.border = "4px solid var(--main-green)";
+            } else {
+                playSFX('wrong');
+                title.innerText = "PELANGGARAN SOP!";
+                title.className = "text-3xl font-bold uppercase mb-2 text-[var(--main-red)]";
+                icon.innerText = "🚨";
+                msg.innerText = q.feedbackWrong;
+                box.style.border = "4px solid var(--main-red)";
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function nextQuestion() {
+            document.getElementById('modal-feedback').style.display = 'none';
+            state.currentQ++;
+            
+            if (state.currentQ >= questions.length) {
+                finishGame();
+            } else {
+                renderQuestion();
+            }
+        }
+
+        function finishGame() {
+            stopBGM();
+            showScreen('screen-result');
+            
+            // Final Progress Update
+            document.getElementById('progress-text').innerText = `100%`;
+            document.getElementById('progress-fill').style.width = `100%`;
+            document.getElementById('score-text').innerText = state.score;
+
+            // Populate Result Data
+            document.getElementById('res-name').innerText = state.name;
+            document.getElementById('res-nik').innerText = state.nik;
+
+            const percentage = Math.round((state.score / questions.length) * 100);
+            document.getElementById('res-score-percent').innerText = `${percentage}%`;
+
+            const statusMsg = document.getElementById('res-status-msg');
+            const reinforcement = document.getElementById('res-reinforcement');
+            const badge = document.getElementById('result-badge');
+            
+            // Passing criteria is 100% based on synopsis
+            if (percentage === 100) {
+                playSFX('correct'); // success sound
+                statusMsg.innerText = "LULUS - SERTIFIKAT TERBUKA!";
+                statusMsg.className = "font-bold mb-4 text-lg text-[var(--main-green)]";
+                reinforcement.innerText = "Luar biasa, Guardian! Mata elangmu memastikan standar tertinggi tercapai. Kamu siap bekerja prima hari ini!";
+                reinforcement.className = "text-sm font-semibold mb-6 p-4 border-2 border-black rounded bg-[var(--main-green)] text-white";
+                badge.innerText = "🌟"; // Perfect badge
+            } else if (percentage >= 70) {
+                playSFX('wrong');
+                statusMsg.innerText = "BELUM TUNTAS - BUTUH 100%";
+                statusMsg.className = "font-bold mb-4 text-lg text-[var(--main-yellow)]";
+                reinforcement.innerText = "Hampir sempurna! Masih ada beberapa detail SOP yang terlewat. Sebagai Senior Crew, ketelitian adalah kunci. Ayo coba lagi sampai 100%!";
+                reinforcement.className = "text-sm font-semibold mb-6 p-4 border-2 border-black rounded bg-[var(--main-yellow)] text-black";
+                badge.innerText = "👀"; // Good eye badge
+            } else {
+                playSFX('wrong');
+                statusMsg.innerText = "TIDAK LULUS - INSPEKSI GAGAL";
+                statusMsg.className = "font-bold mb-4 text-lg text-[var(--main-red)]";
+                reinforcement.innerText = "Kualitas pelayanan terancam! Banyak pelanggaran SOP yang lolos dari pengawasanmu. Silakan pelajari kembali panduan grooming dan ulangi inspeksi.";
+                reinforcement.className = "text-sm font-semibold mb-6 p-4 border-2 border-black rounded bg-[var(--main-red)] text-white";
+                badge.innerText = "⚠️"; // Warning badge
+            }
+        }
+    </script>
+</body>
+</html>
